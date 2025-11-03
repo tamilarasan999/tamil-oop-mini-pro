@@ -1,0 +1,99 @@
+package miniproject;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Bill {
+    private int billId;
+    private String patientName;
+    private String doctorName;
+    private String roomType;
+    private double treatmentCost;
+    private double roomCharge;
+    private double totalAmount;
+
+    public Bill(int billId, String patientName, String doctorName, String roomType, double treatmentCost, double roomCharge) {
+        this.billId = billId;
+        this.patientName = patientName;
+        this.doctorName = doctorName;
+        this.roomType = roomType;
+        this.treatmentCost = treatmentCost;
+        this.roomCharge = roomCharge;
+        this.totalAmount = treatmentCost + roomCharge;
+    }
+
+    public int getBillId() { return billId; }
+
+    public void displayBill() {
+        System.out.println("---------------------------------------");
+        System.out.println("Bill ID        : " + billId);
+        System.out.println("Patient Name   : " + patientName);
+        System.out.println("Doctor Name    : " + doctorName);
+        System.out.println("Room Type      : " + roomType);
+        System.out.println("Treatment Cost : ₹" + treatmentCost);
+        System.out.println("Room Charge    : ₹" + roomCharge);
+        System.out.println("Total Amount   : ₹" + totalAmount);
+    }
+}
+
+public class HospitalBillingSystem {
+    static ArrayList<Bill> bills = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+        while (true) {
+            System.out.println("\n===== HOSPITAL BILLING SYSTEM =====");
+            System.out.println("1. Create Bill");
+            System.out.println("2. View All Bills");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    createBill();
+                    break;
+                case 2:
+                    viewBills();
+                    break;
+                case 3:
+                    System.out.println("Thank you for using Hospital Billing System!");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Try again!");
+            }
+        }
+    }
+
+    static void createBill() {
+        System.out.print("Enter patient name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter doctor name: ");
+        String doctor = sc.nextLine();
+        System.out.print("Enter room type (General/Private/ICU): ");
+        String room = sc.nextLine();
+        System.out.print("Enter treatment cost: ₹");
+        double treatment = sc.nextDouble();
+        System.out.print("Enter room charge: ₹");
+        double roomCharge = sc.nextDouble();
+
+        int id = bills.size() + 1;
+        Bill b = new Bill(id, name, doctor, room, treatment, roomCharge);
+        bills.add(b);
+
+        System.out.println("\nBill generated successfully with ID: " + id);
+    }
+
+    static void viewBills() {
+        if (bills.isEmpty()) {
+            System.out.println("No bills available.");
+            return;
+        }
+        System.out.println("\n===== ALL BILLS =====");
+        for (Bill b : bills) {
+            b.displayBill();
+        }
+    }
+}
