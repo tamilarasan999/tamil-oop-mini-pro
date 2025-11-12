@@ -1,99 +1,86 @@
-package miniproject;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+public class HospitalBillingSystem extends JFrame implements ActionListener {
+    private JTextField patientNameField, treatmentField, costField, daysField, totalField;
+    private JButton calculateBtn, clearBtn, exitBtn;
 
-class Bill {
-    private int billId;
-    private String patientName;
-    private String doctorName;
-    private String roomType;
-    private double treatmentCost;
-    private double roomCharge;
-    private double totalAmount;
+    public HospitalBillingSystem() {
+        // Frame settings
+        setTitle("Hospital Billing System");
+        setSize(500, 400);
+        setLayout(new GridLayout(7, 2, 10, 10));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-    public Bill(int billId, String patientName, String doctorName, String roomType, double treatmentCost, double roomCharge) {
-        this.billId = billId;
-        this.patientName = patientName;
-        this.doctorName = doctorName;
-        this.roomType = roomType;
-        this.treatmentCost = treatmentCost;
-        this.roomCharge = roomCharge;
-        this.totalAmount = treatmentCost + roomCharge;
+        // Labels and text fields
+        add(new JLabel("Patient Name:"));
+        patientNameField = new JTextField();
+        add(patientNameField);
+
+        add(new JLabel("Treatment:"));
+        treatmentField = new JTextField();
+        add(treatmentField);
+
+        add(new JLabel("Cost per Day (₹):"));
+        costField = new JTextField();
+        add(costField);
+
+        add(new JLabel("Number of Days:"));
+        daysField = new JTextField();
+        add(daysField);
+
+        add(new JLabel("Total Bill (₹):"));
+        totalField = new JTextField();
+        totalField.setEditable(false);
+        add(totalField);
+
+        // Buttons
+        calculateBtn = new JButton("Calculate Bill");
+        calculateBtn.addActionListener(this);
+        add(calculateBtn);
+
+        clearBtn = new JButton("Clear");
+        clearBtn.addActionListener(this);
+        add(clearBtn);
+
+        exitBtn = new JButton("Exit");
+        exitBtn.addActionListener(this);
+        add(exitBtn);
+
+        // Styling
+        Font f = new Font("Times New Roman", Font.PLAIN, 16);
+        for (Component c : getContentPane().getComponents()) {
+            c.setFont(f);
+        }
+
+        setVisible(true);
     }
 
-    public int getBillId() { return billId; }
-
-    public void displayBill() {
-        System.out.println("---------------------------------------");
-        System.out.println("Bill ID        : " + billId);
-        System.out.println("Patient Name   : " + patientName);
-        System.out.println("Doctor Name    : " + doctorName);
-        System.out.println("Room Type      : " + roomType);
-        System.out.println("Treatment Cost : ₹" + treatmentCost);
-        System.out.println("Room Charge    : ₹" + roomCharge);
-        System.out.println("Total Amount   : ₹" + totalAmount);
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == calculateBtn) {
+            try {
+                double cost = Double.parseDouble(costField.getText());
+                int days = Integer.parseInt(daysField.getText());
+                double total = cost * days;
+                totalField.setText(String.format("%.2f", total));
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter valid numeric values!");
+            }
+        } else if (e.getSource() == clearBtn) {
+            patientNameField.setText("");
+            treatmentField.setText("");
+            costField.setText("");
+            daysField.setText("");
+            totalField.setText("");
+        } else if (e.getSource() == exitBtn) {
+            System.exit(0);
+        }
     }
-}
-
-public class HospitalBillingSystem {
-    static ArrayList<Bill> bills = new ArrayList<>();
-    static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        int choice;
-        while (true) {
-            System.out.println("\n===== HOSPITAL BILLING SYSTEM =====");
-            System.out.println("1. Create Bill");
-            System.out.println("2. View All Bills");
-            System.out.println("3. Exit");
-            System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
-            sc.nextLine();
-
-            switch (choice) {
-                case 1:
-                    createBill();
-                    break;
-                case 2:
-                    viewBills();
-                    break;
-                case 3:
-                    System.out.println("Thank you for using Hospital Billing System!");
-                    System.exit(0);
-                default:
-                    System.out.println("Invalid choice. Try again!");
-            }
-        }
-    }
-
-    static void createBill() {
-        System.out.print("Enter patient name: ");
-        String name = sc.nextLine();
-        System.out.print("Enter doctor name: ");
-        String doctor = sc.nextLine();
-        System.out.print("Enter room type (General/Private/ICU): ");
-        String room = sc.nextLine();
-        System.out.print("Enter treatment cost: ₹");
-        double treatment = sc.nextDouble();
-        System.out.print("Enter room charge: ₹");
-        double roomCharge = sc.nextDouble();
-
-        int id = bills.size() + 1;
-        Bill b = new Bill(id, name, doctor, room, treatment, roomCharge);
-        bills.add(b);
-
-        System.out.println("\nBill generated successfully with ID: " + id);
-    }
-
-    static void viewBills() {
-        if (bills.isEmpty()) {
-            System.out.println("No bills available.");
-            return;
-        }
-        System.out.println("\n===== ALL BILLS =====");
-        for (Bill b : bills) {
-            b.displayBill();
-        }
+        SwingUtilities.invokeLater(HospitalBillingSystem::new);
     }
 }
